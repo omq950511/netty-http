@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserMapper">
+
+
+    <!--用户登录验证-->
+    <select id="checkUser" resultType="pd" parameterType="pd">
+        select t.USERID, t.USERNAME from tb_user t WHERE t.USERNAME = '${username}' AND t.USERPWD = '${password}'
+    </select>
+
+    <!--根据用户名，查询用户角色和权限-->
+    <select id="queryMenuAuthByUserName" parameterType="string" resultType="map">
+        select * from tb_menu m where m.menu_id in (
+        select rm.menu_id from tb_role_menu rm where rm.role_id in
+        (select ur.ROLE_ID from tb_user_role ur inner join TB_USER u on ur.USER_ID = u.USERID where u.USERNAME = '#{userName}'));
+    </select>
+</mapper>
